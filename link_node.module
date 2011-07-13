@@ -58,7 +58,7 @@ function link_node_filter_settings() {
     '#type' => 'item',
     '#title' => t('Instructions'),
     '#value' => t('This filter translates special node tags into links to other nodes. 
-      Syntax: [node:node_id,title="val2"]; every param but node_id is optional.
+      Syntax: [id:node_id,title="val2"]; every param but node_id is optional.
       Each list below should be a comma separated list (no spaces) of what node properties users are
       allowed to override for the purposes of displaying a node.  E.g. <em>title,border</em>')
   );
@@ -85,7 +85,7 @@ function link_node_filter_process($text, $show_error_msgs=1) {
   if (variable_get("link_node_enabled", 1)) {
     // *** [node:NID,a="b",c="d",width="40",etc="foo"] ***
     // first we find every tag
-    $meta_tag_regexp = '/\[node:(\d+)([^\]]*)\]/i';
+    $meta_tag_regexp = '/\[id:(\d+)([^\]]*)\]/i';
 
     if (preg_match_all($meta_tag_regexp, $text, $match)) {
       // then we make the html
@@ -208,12 +208,12 @@ function link_node_help($path, $arg) {
       $output = t('<p><strong>Nodes That Link To Other Nodes</strong></p>
       <p>
       You can link nodes to other nodes using the following syntax:<br>
-      [node:<em>node_id</em>,title="val1"]<br><br>
+      [id:<em>node_id</em>,title="val1"]<br><br>
       </p>
       <p>
       Some examples:<br>
-      [node:123]<br>
-      [node:123,title="original"]<br>
+      [id:123]<br>
+      [id:123,title="original"]<br>
       </p><p>Currently available parameters:<table border="1">');
       foreach (node_get_types() as $type => $name) {
         $output .= "<tr><td>". t("Allowed parameters for <strong>$type</strong> nodes: ") ."</td><td>". variable_get("link_node_allowed_vars_$type", "") ."</td></tr>\n";
@@ -235,12 +235,12 @@ function link_node_filter_tips($delta, $format, $long = FALSE) {
     $txt = t('<strong>Linking Nodes To Other Nodes</strong>
       <p>
       You can link nodes to other nodes using the following syntax:<br>
-      [node:<em>node_id</em>,title="val2"]<br><br>
+      [id:<em>node_id</em>,title="val2"]<br><br>
       </p>
       <p>
       Some examples:<br>
-      [node:123]<br>
-      [node:123,title="original"]<br>
+      [id:123]<br>
+      [id:123,title="original"]<br>
       </p><p>Currently available parameters:<table border="1">');
     foreach (node_get_types() as $type => $name) {
       $txt .= "<tr><td>". t("Allowed parameters for <strong>$type</strong> nodes: ") ."</td><td>". variable_get("link_node_allowed_vars_$type", "") ."</td></tr>\n";
@@ -255,7 +255,7 @@ function link_node_filter_tips($delta, $format, $long = FALSE) {
   }
   else {
     return t('You can link nodes to other nodes using the following syntax:<br>
-    [node:<em>node_id</em>,title="val2"]');
+    [id:<em>node_id</em>,title="val2"]');
   }
 }
 
