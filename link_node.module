@@ -85,11 +85,11 @@ function link_node_filter_process($text, $show_error_msgs=1) {
   if (variable_get("link_node_enabled", 1)) {
     // *** [node:NID,a="b",c="d",width="40",etc="foo"] ***
     // first we find every tag
-    $meta_tag_regexp = '/\[id:(\d+)([^\]]*)\]/i';
+    $meta_tag_regexp = '/\[(node|id):(\d+)([^\]]*)\]/i';
 
     if (preg_match_all($meta_tag_regexp, $text, $match)) {
       // then we make the html
-      foreach ($match[1] as $key => $nid) {
+      foreach ($match[2] as $key => $nid) {
         if (module_exists('i18n') && module_exists('translation')) {
 	  $lang = i18n_get_lang();
           $transnids = translation_node_get_translations($nid);
@@ -109,11 +109,11 @@ function link_node_filter_process($text, $show_error_msgs=1) {
           $meta_tag_params_regexp = '/,\s*([\w_-]+)\s*=\s*"([^"]+)"\s*/';
           $meta_tag_params_regexp2 = '/,\s*([\w_-]+)\s*=\s*&quot;([^,]+)&quot;\s*/';
 
-          if ( preg_match_all($meta_tag_params_regexp, $match[2][$key], $parm_match) == 0 ) {
+          if ( preg_match_all($meta_tag_params_regexp, $match[3][$key], $parm_match) == 0 ) {
             $meta_tag_params_regexp=$meta_tag_params_regexp2 ;
           }
           
-          if (preg_match_all($meta_tag_params_regexp, $match[2][$key], $parm_match)) {
+          if (preg_match_all($meta_tag_params_regexp, $match[3][$key], $parm_match)) {
             $allowed_vars = explode(',', variable_get("link_node_allowed_vars_$node->type", ""));
             for ($i=0; $i<count($parm_match[1]); $i++) {  
               //$parm_match[1] contains the param names, $parm_match[2] contains values
@@ -145,6 +145,8 @@ function link_node_filter_process($text, $show_error_msgs=1) {
           }
         }
       }
+      
+      // PHP 4.3.2 is not supported in this version.
       
       // PHP (4.3.2) str_replace appears to use some internal order
       // rather than array index when finding replace elements
